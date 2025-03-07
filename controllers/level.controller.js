@@ -1,4 +1,7 @@
 const Level = require("../models/levels.model");
+const Registration = require("../models/registration.model");
+const User = require("../models/user.model");
+const Course = require("../models/course.model");
 
 exports.createLevel = async (req, res) => {
   try {
@@ -63,10 +66,23 @@ exports.deleteLevel = async (req, res) => {
     if (!deletedLevel) {
       return res.status(404).json({ message: "Level not found" });
     }
+    const courses = await Course.find({ level: req.params.id }).select("_id");
+    const courseIds = courses.map((c) => c._id);
+    await Registration.deleteMany({
+      course: { $in: courseIds },
+    });
+    // await Registration.deleteMany({
+    //   course: {
+    //     $in: await Course.find({ level: req.params.id }).distinct("_id"),
+    //   },
+    // });
+    await User.deleteMany({ level: req.params.id });
+    await Course.deleteMany({ level: req.params.id });
     res
       .status(200)
       .json({ status: "success", message: "Level deleted successfully" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: error.message });
   }
 };

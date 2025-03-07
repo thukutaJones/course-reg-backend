@@ -1,6 +1,6 @@
 const Course = require("../models/course.model");
 const Level = require("../models/levels.model");
-
+const Registration = require("../models/registration.model");
 exports.createCourse = async (req, res) => {
   try {
     const { name, level } = req.body;
@@ -27,7 +27,18 @@ exports.createCourse = async (req, res) => {
 
 exports.getCourses = async (req, res) => {
   try {
-    const courses = await Course.find();
+    const courses = await Course.find().populate("level");
+    res.status(200).json(courses);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getCoursesByLevel = async (req, res) => {
+  try {
+    const { level } = req.params;
+    console.log(level);
+    const courses = await Course.find({ level });
     res.status(200).json(courses);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -48,7 +59,7 @@ exports.updateCourse = async (req, res) => {
       if (existingCourse) {
         return res.status(400).json({ message: "Course name already in use" });
       }
-      await Course.findByIdAndDelete(req.params.id, { name });
+      await Course.findByIdAndUpdate(req.params.id, { name, level });
     }
 
     if (level) {
@@ -73,7 +84,7 @@ exports.deleteCourse = async (req, res) => {
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
-
+    await Registration.deleteMany({ course: req.params.id });
     res.status(200).json({
       status: "success",
       message: "Course deleted successfully!!",

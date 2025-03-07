@@ -10,6 +10,8 @@ const authRoutes = require("./routes/auth.route");
 const courseRoutes = require("./routes/course.route");
 const levelsRoutes = require("./routes/levels.route");
 const registrationRoutes = require("./routes/registration.route");
+const statsRoutes = require("./routes/stats.route");
+const userRoutes = require("./routes/user.route");
 
 const app = express();
 
@@ -31,5 +33,7 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/level", levelsRoutes);
 app.use("/api/v1/course", courseRoutes);
 app.use("/api/v1/registration", registrationRoutes);
+app.use("/api/v1/stats", statsRoutes);
+app.use("/api/v1/me", userRoutes);
 
 module.exports = app;

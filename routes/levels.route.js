@@ -5,12 +5,13 @@ const {
   updateLevel,
   deleteLevel,
 } = require("../controllers/level.controller");
+const authenticateToken = require('../middleware/authanticateToken')
 
 const router = express.Router();
 
-router.get("/", getLevels);
-router.post("/", createLevel);
-router.put("/:id", updateLevel);
-router.delete("/:id", deleteLevel);
+router.get("/",  getLevels);
+router.post("/", authenticateToken, createLevel);
+router.put("/:id", authenticateToken, updateLevel);
+router.delete("/:id", authenticateToken, deleteLevel);
 
 module.exports = router;

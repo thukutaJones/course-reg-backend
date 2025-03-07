@@ -40,8 +40,15 @@ exports.createRegistration = async (req, res) => {
 exports.getAllRegistrations = async (req, res) => {
   try {
     const registrations = await Registration.find()
-      .populate("course")
-      .populate("student");
+      .populate({
+        path: "course",
+        populate: {
+          path: "level",
+        },
+      })
+      .populate({
+        path: "student",
+      });
     res.status(200).json(registrations);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -69,12 +76,10 @@ exports.updateRegistration = async (req, res) => {
       return res.status(404).json({ message: "Registration not found" });
     }
 
-    res
-      .status(200)
-      .json({
-        status: "sucess",
-        message: "Registartion updated successfully!!",
-      });
+    res.status(200).json({
+      status: "sucess",
+      message: "Registartion updated successfully!!",
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -88,12 +93,10 @@ exports.deleteRegistration = async (req, res) => {
     if (!deletedRegistration) {
       return res.status(404).json({ message: "Registration not found" });
     }
-    res
-      .status(200)
-      .json({
-        status: "success",
-        message: "Registration deleted successfully",
-      });
+    res.status(200).json({
+      status: "success",
+      message: "Registration deleted successfully",
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

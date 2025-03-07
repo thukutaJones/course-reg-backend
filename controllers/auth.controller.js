@@ -9,9 +9,6 @@ const signinToken = (id) => {
 
 const createSendToken = (user, statusCode, res) => {
   const token = signinToken(user._id);
-  // res.cookie("token", token, {
-  //   httpOnly: true,
-  // });
 
   res.status(statusCode).json({
     status: "success",
